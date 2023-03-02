@@ -1,0 +1,151 @@
+<?php
+
+/**
+ * @file
+ * Install and update hooks for Radioactivity module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function radioactivity_requirements($phase) {
+  $requirements = [];
+
+  if ($phase == 'runtime') {
+    $radioactivityReferenceUpdater = \Drupal::service('radioactivity.reference_updater');
+
+    if (!$radioactivityReferenceUpdater->hasMissingReferences()) {
+      return [];
+    }
+
+    $requirements['radioactivity_reference'] = [
+      'title' => t('Radioactivity'),
+      'value' => t('Radioactivity Reference fields found without reference to Radioactivity entities. You must generate Radioactivity entities and update the radioactivity reference fields. For more information, see the <a href=":docs">online documentation</a>.', [':docs' => 'https://www.drupal.org/docs/contributed-modules/radioactivity']),
+      'severity' => REQUIREMENT_ERROR,
+    ];
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_schema().
+ */
+function radioactivity_schema() {
+  $schema['radioactivity_incident'] = [
+    'description' => 'Stores radioactivity incidents.',
+    'fields' => [
+      'iid' => [
+        'description' => 'Unique incident ID.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'entity_type' => [
+        'description' => 'The entity type this incident belongs to.',
+        'type' => 'varchar_ascii',
+        'length' => 64,
+        'not null' => TRUE,
+      ],
+      'incident' => [
+        'description' => 'The incident object.',
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'normal',
+      ],
+    ],
+    'primary key' => ['iid'],
+    'indexes' => [
+      'entity_type' => ['entity_type'],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function radioactivity_update_dependencies() {
+  // The radioactivity_update_9002 must run before radioactivity_update_9001.
+  // 9002 came later to the table, but must run first in order to create the
+  // radioactivity table that 9001 uses.
+  $dependencies['radioactivity'][9001] = array(
+    'radioactivity' => 9002,
+  );
+  return $dependencies;
+}
+
+/**
+ * Migrate field formatter configuration for 'display' setting.
+ */
+function radioactivity_update_9001(&$sandbox) {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $entity_field_manager = \Drupal::service('entity_field.manager');
+  $entity_display_repository = \Drupal::service('entity_display.repository');
+  $field_map = $entity_field_manager
+    ->getFieldMapByFieldType('radioactivity_reference');
+  $field_map = array_merge_recursive($field_map, $entity_field_manager
+    ->getFieldMapByFieldType('radioactivity'));
+
+  foreach ($field_map as $entity_type => $field_names) {
+    foreach ($field_names as $field_name => $info) {
+      foreach ($info['bundles'] as $bundle) {
+        $view_modes = $entity_display_repository
+          ->getViewModeOptionsByBundle($entity_type, $bundle);
+        foreach (array_keys($view_modes) as $view_mode) {
+          $entity_view_display = $entity_type_manager
+            ->getStorage('entity_view_display')
+            ->load("{$entity_type}.{$bundle}.{$view_mode}");
+
+          // Update the the 'display' setting of the field formatter config.
+          // 'raw' to TRUE, 'none' to FALSE.
+          if ($entity_view_display) {
+            $content = $entity_view_display->get('content');
+            if (isset($content[$field_name])) {
+              $old_display = $content[$field_name]['settings']['display'];
+              $content[$field_name]['settings']['display'] = $old_display === 'raw';
+              $entity_view_display->set('content', $content);
+            }
+            $entity_view_display->save();
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Creates the database table for the Radioactivity entity.
+ */
+function radioactivity_update_9002() {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('radioactivity');
+  $update_manager->installEntityType($entity_type);
+}
+
+/**
+ * Create radioactivity_incident table if not yet exists.
+ */
+function radioactivity_update_9003() {
+  $database_schema = \Drupal::database()->schema();
+  if (!$database_schema->tableExists('radioactivity_incident')) {
+    $schema_definition = radioactivity_schema()['radioactivity_incident'];
+    $database_schema->createTable('radioactivity_incident', $schema_definition);
+  }
+}
+
+/**
+ * Move incidents from Drupal state storage into new database storage.
+ */
+function radioactivity_update_9004() {
+  $state = \Drupal::state();
+  /** @var \Drupal\radioactivity\IncidentStorageInterface $storage */
+  $storage = \Drupal::service('radioactivity.default_incident_storage');
+
+  $incidents = $state->get('radioactivity_incidents', []);
+  $state->delete('radioactivity_incidents');
+
+  foreach ($incidents as $incident) {
+    $storage->addIncident($incident);
+  }
+}

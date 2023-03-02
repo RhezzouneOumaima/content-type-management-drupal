@@ -1,0 +1,138 @@
+# Schema for the configuration files of the Radioactivity module.
+
+field.storage_settings.radioactivity:
+  type: mapping
+  label: 'Radioactivity settings'
+  mapping:
+    profile:
+      type: string
+      label: 'Energy profile'
+    granularity:
+      type: integer
+      label: 'Granularity'
+    halflife:
+      type: integer
+      label: 'Half-life time'
+    cutoff:
+      type: float
+      label: 'Cutoff'
+
+field.field_settings.radioactivity:
+  type: mapping
+  label: 'Radioactivity settings'
+
+field.value.radioactivity:
+  type: mapping
+  label: 'Default value'
+  mapping:
+    energy:
+      type: float
+      label: 'Energy'
+    timestamp:
+      type: integer
+      label: 'Timestamp'
+
+field.widget.settings.radioactivity_energy:
+  type: mapping
+  label: 'Radioactivity energy widget settings'
+  mapping:
+    energy:
+      type: float
+      label: 'Energy'
+    timestamp:
+      type: string
+      label: 'Timestamp'
+
+field.formatter.settings.radioactivity_emitter:
+  type: mapping
+  label: 'Radioactivity emitter format settings'
+  mapping:
+    energy:
+      type: float
+      label: 'Energy'
+    display:
+      type: boolean
+      label: 'Dislay energy'
+    decimals:
+      type: float
+      label: 'Decimals'
+
+field.formatter.settings.radioactivity_value:
+  type: mapping
+  label: 'Radioactivity value format settings'
+  mapping:
+    decimals:
+      type: float
+      label: 'Decimals'
+
+field.storage_settings.radioactivity_reference:
+  type: mapping
+  label: 'Radioactivity reference field storage settings'
+  mapping:
+    target_type:
+      type: string
+      label: 'Type of item to reference'
+    profile:
+      type: string
+      label: 'Energy profile'
+    granularity:
+      type: integer
+      label: 'Granularity'
+    halflife:
+      type: integer
+      label: 'Half-life time'
+    cutoff:
+      type: float
+      label: 'Cutoff'
+
+field.value.radioactivity_reference:
+  type: mapping
+  label: 'Default value'
+  mapping:
+    target_id:
+      type: integer
+      label: 'Value'
+    target_uuid:
+      type: string
+      label: 'Target UUID'
+    energy:
+      type: float
+      label: 'Energy'
+
+field.field_settings.radioactivity_reference:
+  type: field.field_settings.entity_reference
+  label: 'Radioactivity reference settings'
+  mapping:
+    default_energy:
+      type: float
+      label: 'Default energy'
+
+field.widget.settings.radioactivity_reference_energy:
+  type: mapping
+  label: 'Radioactivity reference energy widget settings'
+  mapping:
+    energy:
+      type: float
+      label: 'Energy'
+
+field.formatter.settings.radioactivity_reference_emitter:
+  type: mapping
+  label: 'Radioactivity reference emitter format settings'
+  mapping:
+    energy:
+      type: float
+      label: 'Energy'
+    display:
+      type: boolean
+      label: 'Display energy'
+    decimals:
+      type: float
+      label: 'Decimals'
+
+field.formatter.settings.radioactivity_reference_value:
+  type: mapping
+  label: 'Radioactivity reference value format settings'
+  mapping:
+    decimals:
+      type: float
+      label: 'Decimals'

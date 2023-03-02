@@ -1,0 +1,26 @@
+{
+    "name": "drupal/radioactivity",
+    "description": "Provides a field which can be used to track popularity, views, etc.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/radioactivity",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/radioactivity",
+        "source": "https://git.drupalcode.org/project/radioactivity"
+    },
+    "require": {
+        "php": ">=7.4",
+        "drupal/core": "^9"
+    },
+    "require-dev": {
+        "drupal/rules": "^3.0"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "drush": {
+            "services": {
+                "drush.services.yml": "^10"
+            }
+        }
+    }
+}

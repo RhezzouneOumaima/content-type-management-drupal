@@ -1,0 +1,23 @@
+services:
+  radioactivity.processor:
+    class: Drupal\radioactivity\RadioactivityProcessor
+    arguments: ['@entity_type.manager', '@state', '@logger.factory', '@radioactivity.storage', '@datetime.time', '@queue', '@event_dispatcher']
+
+  radioactivity.storage:
+    class: Drupal\radioactivity\StorageFactory
+    arguments: ['@config.factory', '@class_resolver']
+
+  radioactivity.default_incident_storage:
+    class: Drupal\radioactivity\DefaultIncidentStorage
+    arguments: ['@database', '@serialization.phpserialize']
+
+  radioactivity.rest_incident_storage:
+    class: Drupal\radioactivity\RestIncidentStorage
+
+  radioactivity.lazy_builder:
+    class: Drupal\radioactivity\RadioactivityLazyBuilder
+    arguments: ['@entity_type.manager']
+
+  radioactivity.reference_updater:
+    class: Drupal\radioactivity\RadioactivityReferenceUpdater
+    arguments: ['@entity_type.manager', '@entity_field.manager', '@datetime.time']

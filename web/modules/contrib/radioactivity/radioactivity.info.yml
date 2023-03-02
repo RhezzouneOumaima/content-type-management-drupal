@@ -1,0 +1,13 @@
+name: Radioactivity
+type: module
+description: Provides a field which can be used to track popularity, views, etc.
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:field
+test_dependencies:
+  - rules:rules
+
+# Information added by Drupal.org packaging script on 2022-10-18
+version: '4.0.3'
+project: 'radioactivity'
+datestamp: 1666084644

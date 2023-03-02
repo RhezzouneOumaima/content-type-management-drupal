@@ -1,0 +1,21 @@
+<br/><br/>
+<br/>
+
+<div class="col d-flex justify-content-center">
+
+<div class="card" style="width:400px">
+<img  src="{{ file_url(elements.field_img['#items'].entity.uri.value) }}"/>
+  <div class="card-body">
+    <h4 class="card-title">{{ elements.field_title.0["#context"].value }}</h4>
+    <br/>
+    <div>	  <span class="badge rounded-pill bg-warning ">          {{ elements.field_tag.0["#title"] }}
+</span></div>
+<div>
+<p>
+{{ elements.field_extract.0["#context"].value }}
+</p>
+</div>
+
+            <button type="button" class="btn btn-success"><a href={{ path('entity.node.canonical', {'node': elements['#node'].id()  }) }}>More</a></button>
+  </div>
+</div></div>

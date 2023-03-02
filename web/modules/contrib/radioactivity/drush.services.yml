@@ -1,0 +1,6 @@
+services:
+  radioactivity.commands:
+    class: \Drupal\radioactivity\Commands\RadioactivityCommands
+    arguments: ['@entity_type.manager', '@radioactivity.reference_updater']
+    tags:
+      - { name: drush.command }

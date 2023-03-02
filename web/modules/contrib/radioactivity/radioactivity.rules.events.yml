@@ -1,0 +1,7 @@
+radioactivity_field_cutoff:
+  label: 'Energy is below the cutoff level'
+  category: 'Radioactivity'
+  context_definitions:
+    entity:
+      type: 'entity'
+      label: 'Entity'

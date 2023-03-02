@@ -1,0 +1,36 @@
+<?php
+
+function layout_theme($existing, $type, $theme, $path) {
+    return [
+        'header_block'=>[
+            'template'=>'header',
+            'variables'=>[
+                'data' => [],
+            ]
+            ],
+            'footer_block'=>[
+                'template'=>'footer',
+                'variables'=>[
+                    'data' => [],
+                ]
+                ],
+                'block__mycustomone' =>
+                [
+                  'template' => 'block--mycustomone'
+                ],
+                'node__view__last_actualities' =>
+                [
+                    'template' => 'node--view--last-actualities'
+                ],
+                'node__view__all_actualities' =>
+                [
+                    'template' => 'node--view--all-actualities'
+                ],
+                'node__actuality__full' =>
+                [
+                    'template' => 'node--actuality--full'
+                ]
+            ];
+}
+
+?>
